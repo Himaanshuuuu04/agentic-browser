@@ -30,7 +30,7 @@ PROVIDER_CONFIGS = {
     "anthropic": {
         "class": ChatAnthropic,
         "api_key_env": "ANTHROPIC_API_KEY",
-        "default_model": "claude-4-sonnet",
+        "default_model": "claude-3-5-sonnet-20241022",
         "param_map": {
             "api_key": "anthropic_api_key",
             "base_url": "base_url",
@@ -149,6 +149,30 @@ class LargeLanguageModel:
 
         params.update(kwargs)
 
+        # Validate model names for specific providers
+        if self.provider == "google":
+            valid_google_models = [
+                "gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro",
+                "gemini-pro", "gemini-pro-vision"
+            ]
+            if self.model_name not in valid_google_models:
+                print(f"Warning: '{self.model_name}' may not be a valid Google model. "
+                      f"Valid models: {', '.join(valid_google_models)}")
+                # Use default model if invalid
+                self.model_name = config.get("default_model")
+                params["model"] = self.model_name
+            
+            # Remove parameters that Google's client doesn't support
+            filtered_params = {}
+            supported_google_params = {
+                "model", "google_api_key", "temperature", "max_tokens", 
+                "top_p", "top_k", "convert_system_message_to_human"
+            }
+            for key, value in params.items():
+                if key in supported_google_params:
+                    filtered_params[key] = value
+            params = filtered_params
+
         try:
             self.client = llm_class(**params)
             print(
@@ -176,6 +200,32 @@ class LargeLanguageModel:
         try:
             response = self.client.invoke(messages)
             return str(response.content)
+
+        except TypeError as e:
+            if "max_retries" in str(e) and self.provider == "google":
+                # Handle Google-specific max_retries issue by creating a new client without retry parameters
+                try:
+                    from langchain_google_genai import ChatGoogleGenerativeAI
+                    
+                    # Create a minimal client for Google
+                    minimal_params = {
+                        "model": self.model_name,
+                        "google_api_key": os.getenv("GOOGLE_API_KEY"),
+                        "temperature": 0.4,
+                    }
+                    
+                    backup_client = ChatGoogleGenerativeAI(**minimal_params)
+                    response = backup_client.invoke(messages)
+                    return str(response.content)
+                    
+                except Exception as backup_error:
+                    raise RuntimeError(
+                        f"Error with Google provider even after fallback: {backup_error}"
+                    )
+            else:
+                raise RuntimeError(
+                    f"TypeError in {self.provider} ({self.model_name}): {e}"
+                )
 
         except Exception as e:
             raise RuntimeError(

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Browser API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .get {
+            background: #28a745;
+            color: white;
+        }
+
+        .post {
+            background: #007bff;
+            color: white;
+        }
+
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+
+        .parameter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .parameter-table th,
+        .parameter-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .parameter-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+        }
+
+        .nav a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 1rem;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #28a745;
+            color: white;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🤖 Agentic Browser API</h1>
+        <p>AI-powered tools for chat generation, GitHub analysis, and web content processing</p>
+        <p><strong>Base URL:</strong> http://localhost:5454 <span class="status-badge">RUNNING</span></p>
+    </div>
+
+    <div class="nav">
+        <strong>Quick Navigation:</strong>
+        <a href="#health">Health Check</a>
+        <a href="#chat">Chat Generation</a>
+        <a href="#github">GitHub Analysis</a>
+        <a href="#website">Website Tools</a>
+        <a href="#interactive">Interactive Docs</a>
+    </div>
+
+    <h2 id="health">Health Check</h2>
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <strong>/health</strong>
+        <p>Check if the API service is running and healthy.</p>
+        <div class="code">curl -X GET "http://localhost:5454/health"</div>
+        <p><strong>Response:</strong> <code>{"status": "ok"}</code></p>
+    </div>
+
+    <h2 id="chat">Chat Generation</h2>
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <strong>/v1/chat/generate</strong>
+        <p>Generate AI responses using various LLM providers (Google, OpenAI, Anthropic, Ollama, DeepSeek, OpenRouter).
+        </p>
+
+        <h4>Parameters:</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>prompt</td>
+                <td>string</td>
+                <td>Yes</td>
+                <td>The user prompt/question</td>
+            </tr>
+            <tr>
+                <td>provider</td>
+                <td>string</td>
+                <td>No</td>
+                <td>LLM provider (default: "google")</td>
+            </tr>
+            <tr>
+                <td>model</td>
+                <td>string</td>
+                <td>No</td>
+                <td>Specific model name</td>
+            </tr>
+            <tr>
+                <td>temperature</td>
+                <td>number</td>
+                <td>No</td>
+                <td>Response randomness (0.0-2.0, default: 0.4)</td>
+            </tr>
+            <tr>
+                <td>system_message</td>
+                <td>string</td>
+                <td>No</td>
+                <td>System message to guide AI behavior</td>
+            </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <div class="code">curl -X POST "http://localhost:5454/v1/chat/generate" \
+            -H "Content-Type: application/json" \
+            -d '{
+            "prompt": "Explain quantum computing in simple terms",
+            "provider": "openai",
+            "model": "gpt-4",
+            "temperature": 0.7
+            }'</div>
+    </div>
+
+    <h2 id="github">GitHub Repository Analysis</h2>
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <strong>/v1/github/answer</strong>
+        <p>Analyze GitHub repositories and answer questions about codebases using AI.</p>
+
+        <h4>Parameters:</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>question</td>
+                <td>string</td>
+                <td>Yes</td>
+                <td>Question about the repository</td>
+            </tr>
+            <tr>
+                <td>text</td>
+                <td>string</td>
+                <td>No</td>
+                <td>Relevant file content or context</td>
+            </tr>
+            <tr>
+                <td>tree</td>
+                <td>string</td>
+                <td>No</td>
+                <td>Repository file tree structure</td>
+            </tr>
+            <tr>
+                <td>summary</td>
+                <td>string</td>
+                <td>No</td>
+                <td>Repository summary</td>
+            </tr>
+            <tr>
+                <td>chat_history</td>
+                <td>string</td>
+                <td>No</td>
+                <td>Previous conversation context</td>
+            </tr>
+        </table>
+
+        <h4>Example Request:</h4>
+        <div class="code">curl -X POST "http://localhost:5454/v1/github/answer" \
+            -H "Content-Type: application/json" \
+            -d '{
+            "question": "How does authentication work in this codebase?",
+            "text": "// auth.js content here...",
+            "tree": "src/\n auth/\n auth.js\n middleware.js",
+            "summary": "A Node.js authentication service"
+            }'</div>
+    </div>
+
+    <h2 id="website">Website Processing Tools</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <strong>/v1/website/markdown</strong>
+        <p>Convert any website to clean, readable markdown format.</p>
+
+        <h4>Example Request:</h4>
+        <div class="code">curl -X POST "http://localhost:5454/v1/website/markdown" \
+            -H "Content-Type: application/json" \
+            -d '{"url": "https://example.com"}'</div>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <strong>/v1/website/html-to-md</strong>
+        <p>Convert raw HTML content to clean markdown format.</p>
+
+        <h4>Example Request:</h4>
+        <div class="code">curl -X POST "http://localhost:5454/v1/website/html-to-md" \
+            -H "Content-Type: application/json" \
+            -d '{
+            "html": "<h1>Title</h1>
+            <p>Content with <strong>bold</strong> text.</p>"
+            }'
+        </div>
+    </div>
+
+    <h2 id="interactive">Interactive Documentation</h2>
+    <div class="endpoint">
+        <p>Access interactive API documentation with built-in testing capabilities:</p>
+        <ul>
+            <li><strong>Swagger UI:</strong> <a href="http://localhost:5454/docs"
+                    target="_blank">http://localhost:5454/docs</a></li>
+            <li><strong>ReDoc:</strong> <a href="http://localhost:5454/redoc"
+                    target="_blank">http://localhost:5454/redoc</a></li>
+            <li><strong>OpenAPI JSON:</strong> <a href="http://localhost:5454/openapi.json"
+                    target="_blank">http://localhost:5454/openapi.json</a></li>
+        </ul>
+    </div>
+
+    <h2>Supported LLM Providers</h2>
+    <div class="endpoint">
+        <table class="parameter-table">
+            <tr>
+                <th>Provider</th>
+                <th>Example Models</th>
+                <th>Authentication</th>
+            </tr>
+            <tr>
+                <td>google</td>
+                <td>gemini-pro, gemini-1.5-pro</td>
+                <td>GOOGLE_API_KEY</td>
+            </tr>
+            <tr>
+                <td>openai</td>
+                <td>gpt-3.5-turbo, gpt-4, gpt-4-turbo</td>
+                <td>OPENAI_API_KEY</td>
+            </tr>
+            <tr>
+                <td>anthropic</td>
+                <td>claude-3-sonnet, claude-3-opus</td>
+                <td>ANTHROPIC_API_KEY</td>
+            </tr>
+            <tr>
+                <td>ollama</td>
+                <td>Local models</td>
+                <td>OLLAMA_BASE_URL</td>
+            </tr>
+            <tr>
+                <td>deepseek</td>
+                <td>deepseek-chat</td>
+                <td>API Key</td>
+            </tr>
+            <tr>
+                <td>openrouter</td>
+                <td>Various models</td>
+                <td>API Key</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>Environment Setup</h2>
+    <div class="endpoint">
+        <p>Set your API keys as environment variables:</p>
+        <div class="code">export GOOGLE_API_KEY=your_google_api_key
+            export OPENAI_API_KEY=your_openai_api_key
+            export ANTHROPIC_API_KEY=your_anthropic_api_key
+            export OLLAMA_BASE_URL=http://localhost:11434</div>
+    </div>
+
+    <footer style="margin-top: 3rem; padding: 2rem; text-align: center; color: #666; border-top: 1px solid #eee;">
+        <p>Agentic Browser API v0.1.0 | <a href="https://github.com/tashifkhan/agentic-browser">GitHub Repository</a>
+        </p>
+        <p>Last updated: September 25, 2025</p>
+    </footer>
+</body>
+
+</html>
