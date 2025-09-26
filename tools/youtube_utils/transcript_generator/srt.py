@@ -1,6 +1,5 @@
 import re
 
-
 def clean_srt_text(raw: str) -> str:
     """Remove full timestamp lines and the literal backslash-n sequences."""
     full_ts_re = re.compile(
